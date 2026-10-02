@@ -2,7 +2,7 @@ package com.nextstep.server.auth;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-// Demo fields are left out of the JSON when demo mode is off
+// The demo fields don't show up in the JSON when demo mode is off
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record AuthConfigResponse(boolean demo, String email, String password, String code)
 	{

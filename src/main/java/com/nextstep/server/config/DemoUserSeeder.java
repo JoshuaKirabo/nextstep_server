@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-// Makes sure the demo account exists, with the password from config, whenever demo mode is on
+// Making sure the demo account is there with the password from config whenever demo mode is on
 @Component
 public class DemoUserSeeder implements ApplicationRunner
 	{
@@ -31,14 +31,11 @@ public class DemoUserSeeder implements ApplicationRunner
 		@Transactional
 		public void run(ApplicationArguments args)
 			{
-				if(!demo.enabled())
-					{
-						return;
-					}
+				if(!demo.enabled()) return;
 
 				users.findByEmailIgnoreCase(demo.email()).ifPresentOrElse(user ->
 					{
-						// Password changed in config since last start: re-hash it
+						// The password in config changed since last time so hash the new one
 						if(!passwordEncoder.matches(demo.password(), user.getPasswordHash()))
 							{
 								user.setPasswordHash(passwordEncoder.encode(demo.password()));

@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-// Lets Spring Security check passwords against app_user. The "username" here is the email.
+// How Spring Security checks passwords against app_user. "username" here is really the email.
 @Service
 public class AppUserDetailsService implements UserDetailsService
 	{
@@ -20,11 +20,6 @@ public class AppUserDetailsService implements UserDetailsService
 		@Override
 		public UserDetails loadUserByUsername(String email)
 			{
-				return users.findByEmailIgnoreCase(email)
-					.map(user -> User.withUsername(user.getEmail())
-						.password(user.getPasswordHash())
-						.roles("USER")
-						.build())
-					.orElseThrow(() -> new UsernameNotFoundException("Bad credentials"));
+				return users.findByEmailIgnoreCase(email).map(user -> User.withUsername(user.getEmail()).password(user.getPasswordHash()).roles("USER").build()).orElseThrow(() -> new UsernameNotFoundException("Bad credentials"));
 			}
 	}

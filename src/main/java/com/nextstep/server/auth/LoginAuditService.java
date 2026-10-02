@@ -7,7 +7,7 @@ import java.net.InetAddress;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
-// Writes one login_event row per attempt, each in its own short transaction
+// Saves a login_event row for every attempt, each one in its own quick transaction
 @Service
 public class LoginAuditService
 	{
@@ -25,7 +25,7 @@ public class LoginAuditService
 
 		public void record(String email, LoginOutcome outcome, HttpServletRequest request)
 			{
-				// user_id stays NULL when the email matches no account
+				// user_id stays NULL when the email doesn't belong to anyone
 				UUID userId = users.findByEmailIgnoreCase(email).map(AppUser::getId).orElse(null);
 				InetAddress ip = InetAddress.ofLiteral(request.getRemoteAddr());
 				String userAgent = truncate(request.getHeader("User-Agent"), MAX_USER_AGENT);
@@ -35,10 +35,7 @@ public class LoginAuditService
 
 		private static String truncate(String value, int max)
 			{
-				if(value == null || value.length() <= max)
-					{
-						return value;
-					}
+				if(value == null || value.length() <= max) return value;
 
 				return value.substring(0, max);
 			}

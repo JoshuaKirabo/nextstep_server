@@ -10,7 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
-// Maps app_user from V1__auth.sql. tier is left unmapped for now; the column default applies.
+// Lines up with app_user in V1__auth.sql. Leaving tier out for now so the column default just kicks in.
 @Entity
 @Table(name = "app_user")
 public class AppUser

@@ -21,35 +21,30 @@ public class SecurityConfig
 		@Bean
 		public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
 			{
-				http
-					.authorizeHttpRequests(auth -> auth
-						// /error stays public so rejected requests keep their real status (e.g. 403) instead of becoming 401
-						.requestMatchers("/error", "/api/auth/config", "/api/auth/check-creds", "/api/auth/login").permitAll()
-						.anyRequest().authenticated())
-					// JSON API: no login page or browser popup, just a 401
-					.formLogin(AbstractHttpConfigurer::disable)
-					.httpBasic(AbstractHttpConfigurer::disable)
-					.exceptionHandling(ex -> ex
-						.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-					// XSRF-TOKEN cookie; the frontend sends it back in the X-XSRF-TOKEN header on every POST
-					.csrf(csrf -> csrf.spa())
-					.logout(logout -> logout
-						.logoutUrl("/api/auth/logout")
-						.deleteCookies("NEXTSTEP_SESSION")
-						.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT)));
+				// Leaving /error public so a blocked request keeps its real status (like 403) instead of turning into a 401
+				http.authorizeHttpRequests(auth -> auth.requestMatchers("/error", "/api/auth/config", "/api/auth/check-creds", "/api/auth/login").permitAll().anyRequest().authenticated());
+
+				// It's a JSON API so no login page or browser popup, just send back a 401
+				http.formLogin(AbstractHttpConfigurer::disable);
+				http.httpBasic(AbstractHttpConfigurer::disable);
+				http.exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+
+				// Puts the token in an XSRF-TOKEN cookie and the frontend sends it back in the X-XSRF-TOKEN header on every POST
+				http.csrf(csrf -> csrf.spa());
+				http.logout(logout -> logout.logoutUrl("/api/auth/logout").deleteCookies("NEXTSTEP_SESSION").logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT)));
 
 				return http.build();
 			}
 
-		// BCrypt by default; hashes are stored as {bcrypt}... so the algorithm can be upgraded later
+		// Uses BCrypt, and hashes get saved as {bcrypt}... so we can switch the algorithm later if we need to
 		@Bean
 		public PasswordEncoder passwordEncoder()
 			{
 				return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 			}
 
-		// Checks email + password against app_user. Unknown emails still pay the BCrypt cost,
-		// so response time does not reveal which accounts exist.
+		// Checks the email and password against app_user. Emails we don't know still go through BCrypt
+		// so nobody can tell which accounts exist by how long the response takes.
 		@Bean
 		public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder)
 			{

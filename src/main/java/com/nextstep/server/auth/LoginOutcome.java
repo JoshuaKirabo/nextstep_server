@@ -1,6 +1,6 @@
 package com.nextstep.server.auth;
 
-// Values match the CHECK constraint on login_event.outcome
+// These have to match the CHECK constraint on login_event.outcome
 public enum LoginOutcome
 	{
 		SUCCESS("success"),

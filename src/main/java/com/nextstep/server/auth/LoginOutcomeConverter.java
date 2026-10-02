@@ -16,9 +16,6 @@ public class LoginOutcomeConverter implements AttributeConverter<LoginOutcome, S
 		@Override
 		public LoginOutcome convertToEntityAttribute(String value)
 			{
-				return Arrays.stream(LoginOutcome.values())
-					.filter(outcome -> outcome.dbValue().equals(value))
-					.findFirst()
-					.orElse(null);
+				return Arrays.stream(LoginOutcome.values()).filter(outcome -> outcome.dbValue().equals(value)).findFirst().orElse(null);
 			}
 	}

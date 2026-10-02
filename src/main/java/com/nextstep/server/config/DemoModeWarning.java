@@ -21,9 +21,6 @@ public class DemoModeWarning
 		@EventListener(ApplicationReadyEvent.class)
 		public void warnIfEnabled()
 			{
-				if(demo.enabled())
-					{
-						log.warn("DEMO MODE ENABLED: user {} can log in without a 2FA code", demo.email());
-					}
+				if(demo.enabled()) log.warn("DEMO MODE ENABLED: user {} can log in without a 2FA code", demo.email());
 			}
 	}

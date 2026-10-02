@@ -13,7 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-// Maps login_event from V1__auth.sql. Append-only: rows are inserted, never updated.
+// Lines up with login_event in V1__auth.sql. Rows only ever get added, never changed.
 @Entity
 @Table(name = "login_event")
 public class LoginEvent

@@ -5,12 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration;
 
-// No default in-memory user: accounts come from app_user
+// Turning off Spring's built in test user since the accounts come from app_user
 @SpringBootApplication(exclude = UserDetailsServiceAutoConfiguration.class)
 @ConfigurationPropertiesScan
-public class NextstepServerApplication 
+public class NextstepServerApplication
 	{
-		public static void main(String[] args) 
+		public static void main(String[] args)
 			{
 				SpringApplication.run(NextstepServerApplication.class, args);
 			}
